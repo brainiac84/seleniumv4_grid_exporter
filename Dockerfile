@@ -3,7 +3,7 @@ WORKDIR /go/selenium_grid_exporter
 COPY . .
 
 ARG TARGETOS TARGETARCH
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 GO111MODULE=on go build -o /selenium_grid_exporter .
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -o /selenium_grid_exporter .
 
 FROM alpine:3
 LABEL maintainer "AJ <aj@48k.io>"
