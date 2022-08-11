@@ -1,4 +1,4 @@
-FROM golang:1-alpine as build
+FROM golang:1.12-alpine as build
 WORKDIR /go/selenium_grid_exporter
 COPY . .
 RUN go build -o /selenium_grid_exporter .
