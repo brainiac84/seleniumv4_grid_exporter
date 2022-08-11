@@ -1,7 +1,10 @@
 FROM golang:1.12-alpine as build
 WORKDIR /go/selenium_grid_exporter
 COPY . .
-RUN go build -o /selenium_grid_exporter .
+
+ARG TARGETOS TARGETARCH
+ENV GO111MODULE=on
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -o /selenium_grid_exporter .
 
 FROM alpine:3
 LABEL maintainer "AJ <aj@48k.io>"
