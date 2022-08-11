@@ -1,0 +1,64 @@
+env:
+  - GO111MODULE=on
+
+builds:
+- env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - darwin
+  goarch:
+    - amd64
+    - arm64
+  mod_timestamp: '{{ .CommitTimestamp }}'
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  sort: asc
+
+dockers:
+- image_templates:
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-amd64'
+  dockerfile: Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=org.opencontainers.image.description=Deliver Go binaries as fast and easily as possible"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/amd64"
+- image_templates:
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-arm64'
+  dockerfile: Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=org.opencontainers.image.description=Deliver Go binaries as fast and easily as possible"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/arm64"
+  goarch: arm64
+
+docker_manifests:
+- name_template: 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}'
+  image_templates:
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-amd64'
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-arm64'
+- name_template: 'ghcr.io/brainiac84/seleniumv4_grid_exporter:latest'
+  image_templates:
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-amd64'
+  - 'ghcr.io/brainiac84/seleniumv4_grid_exporter:{{ .Tag }}-arm64'
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    files:
+      - README.md
+      - LICENSE

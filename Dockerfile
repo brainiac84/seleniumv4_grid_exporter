@@ -1,12 +1,11 @@
-FROM golang:1.9.0 AS builder
-WORKDIR /go/src/github.com/wakeful/selenium_grid_exporter
+FROM golang:1-alpine as build
+WORKDIR /go/selenium_grid_exporter
 COPY . .
-RUN go get -d
-RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w'
+RUN go build -o /selenium_grid_exporter .
 
-FROM busybox:1.27
+FROM alpine:3
 LABEL maintainer "AJ <aj@48k.io>"
-COPY --from=builder /go/src/github.com/wakeful/selenium_grid_exporter/selenium_grid_exporter .
+COPY --from=builder /selenium_grid_exporter /usr/bin/selenium_grid_exporter
 
 EXPOSE 8080
-ENTRYPOINT ["/selenium_grid_exporter"]
+ENTRYPOINT ["/usr/bin/selenium_grid_exporter"]
