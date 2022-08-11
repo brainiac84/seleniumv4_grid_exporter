@@ -4,7 +4,8 @@ COPY . .
 
 ARG TARGETOS TARGETARCH
 ENV GO111MODULE=on
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -o /selenium_grid_exporter .
+RUN apk update && apk add git && \
+    GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -o /selenium_grid_exporter .
 
 FROM alpine:3
 LABEL maintainer "AJ <aj@48k.io>"
